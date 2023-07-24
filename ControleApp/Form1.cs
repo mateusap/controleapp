@@ -1,4 +1,5 @@
-﻿using MySqlConnector;
+﻿using ControleApp.Class;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,19 +28,13 @@ namespace ControleApp
         public Form1()
         {
             InitializeComponent();
-
-
-
         }
-
-
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             using (var conn = new MySqlConnection(connstring))
             {
-                conn.Open();
+                /*conn.Open();
                 DataTable dt = new DataTable();
                 MySqlCommand command = new MySqlCommand("SELECT * FROM new_schema.pasta1", conn);
                 MySqlDataAdapter adapter = new MySqlDataAdapter(command);
@@ -56,10 +51,32 @@ namespace ControleApp
                     item.SubItems.Add(row["nome"].ToString());
 
                     listView1.Items.Add(item);
+                }*/
+                conn.Open();
+                Empresas.EmpNome empNome = new Empresas.EmpNome();
+                MySqlCommand command2 = new MySqlCommand("SELECT * FROM new_schema.pasta1", conn);
+                MySqlDataReader reader = command2.ExecuteReader();
+                if (reader.Read())
+                {
+                    foreach (object emp in reader)
+                    {
+                        empNome = new Empresas.EmpNome();
+                        empNome.cod = Convert.ToInt32(reader["código"]);
+                        empNome.nome = reader["nome"].ToString();
+                        empNome.uf = reader["uf"].ToString();
+                        dataGridView1.Rows.Add(empNome.cod,empNome.nome,empNome.uf);
+                        ListViewItem item = new ListViewItem();
+                        item.Text = empNome.nome;
+                        listView1.Items.Add(item);
+                    }
+                    reader.Close();
+                }
+                else
+                {
+                    reader.Close();
+                    MessageBox.Show("erro na busca");
                 }
                 conn.Close();
-
-
             }
         }
         private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -87,17 +104,17 @@ namespace ControleApp
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
-            
+
             ListViewItem item = listView1.FindItemWithText(textBox2.Text, true, 0);
             if (item != null) { item.Selected = true; }
-            
+
         }
         private void textBox2_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
                 ListViewItem item = listView1.FindItemWithText(textBox2.Text, true, 0);
-                if (item != null) { item.Selected = true;}
+                if (item != null) { item.Selected = true; }
 
             }
         }
