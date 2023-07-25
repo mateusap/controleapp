@@ -24,6 +24,7 @@ namespace ControleApp
         static string connstring = "server=localhost;userid=root;password=;database=new_schema";
         MySqlConnection connection = new MySqlConnection(connstring);
         private static ListView listview;
+        private DataTable table = new DataTable();
 
         public Form1()
         {
@@ -58,17 +59,20 @@ namespace ControleApp
                 MySqlDataReader reader = command2.ExecuteReader();
                 if (reader.Read())
                 {
-                    foreach (object emp in reader)
+                    table.Load(reader);
+                    dataGridView1.DataSource = table;
+                    /*foreach (object emp in reader)
                     {
                         empNome = new Empresas.EmpNome();
                         empNome.cod = Convert.ToInt32(reader["código"]);
                         empNome.nome = reader["nome"].ToString();
                         empNome.uf = reader["uf"].ToString();
+                        
                         dataGridView1.Rows.Add(empNome.cod,empNome.nome,empNome.uf);
                         ListViewItem item = new ListViewItem();
                         item.Text = empNome.nome;
                         listView1.Items.Add(item);
-                    }
+                    }*/
                     reader.Close();
                 }
                 else
@@ -116,6 +120,48 @@ namespace ControleApp
                 ListViewItem item = listView1.FindItemWithText(textBox2.Text, true, 0);
                 if (item != null) { item.Selected = true; }
 
+            }
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            ProcurarPorColuna("Nome", textBox3);
+            //DataView dataView = table.DefaultView;
+            //dataView.RowFilter = string.Format("Nome like '%{0}%'", textBox3.Text);
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+            ProcurarPorColuna("Código", textBox4);
+            //DataView dataView = table.DefaultView;
+            //dataView.RowFilter = string.Format("convert(Código, 'System.String') like '%{0}%'", textBox4.Text);
+        }
+        private void ProcurarPorColuna(string coluna, TextBox txtb)
+        {
+            DataView DataView = table.DefaultView;
+            DataView.RowFilter = string.Format("convert({0}, 'System.String') like '%{1}%'", coluna, txtb.Text);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            using (var conn = new MySqlConnection(connstring))
+            {
+                conn.Open();
+                Empresas.EmpNome empNome = new Empresas.EmpNome();
+                MySqlCommand command2 = new MySqlCommand("SELECT * FROM new_schema.pasta1", conn);
+                MySqlDataReader reader = command2.ExecuteReader();
+                if (reader.Read())
+                {
+                    table.Load(reader);
+                    dataGridView1.DataSource = table;
+                    reader.Close();
+                }
+                else
+                {
+                    reader.Close();
+                    MessageBox.Show("erro na busca");
+                }
+                conn.Close();
             }
         }
     }
