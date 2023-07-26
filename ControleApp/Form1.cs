@@ -87,6 +87,8 @@ namespace ControleApp
         {
             connection.Open();
             string uf;
+
+            
             string nome = listView1.SelectedItems[0].SubItems[1].Text;
             MySqlCommand command = new MySqlCommand($"SELECT * FROM new_schema.pasta1 WHERE nome = '{nome}'", connection);
             MySqlDataReader reader = command.ExecuteReader();
@@ -163,6 +165,39 @@ namespace ControleApp
                 }
                 conn.Close();
             }
+        }
+
+        private void dataGridView1_DoubleClick(object sender, EventArgs e)
+        {
+            var cod = dataGridView1.SelectedRows[0].Cells[0].Value.ToString();
+
+            connection.Open();
+            string regime;
+            string uf;
+            string cidade;
+            string ie;
+            string cnpj;
+
+
+            MySqlCommand command = new MySqlCommand($"SELECT * FROM new_schema.teste2 WHERE código = '{cod}'", connection);
+            MySqlDataReader reader = command.ExecuteReader();
+            if (reader.Read())
+            {
+                regime = reader["regime"].ToString();
+                uf = reader["uf"].ToString();
+                cidade = reader["cidade"].ToString();
+                ie = reader["ie"].ToString();
+                cnpj = reader["cnpj"].ToString();
+                
+                textBox1.Text = cnpj;
+                reader.Close();
+            }
+            else
+            {
+                reader.Close();
+                MessageBox.Show("erro na busca");
+            }
+            connection.Close();
         }
     }
 }

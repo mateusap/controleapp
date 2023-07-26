@@ -53,7 +53,7 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(374, 39);
+            this.textBox1.Location = new System.Drawing.Point(392, 12);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 20);
@@ -115,6 +115,7 @@
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(344, 214);
             this.dataGridView1.TabIndex = 7;
+            this.dataGridView1.DoubleClick += new System.EventHandler(this.dataGridView1_DoubleClick);
             // 
             // textBox3
             // 
